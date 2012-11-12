@@ -1,6 +1,11 @@
 TBDShoutBot
 ===========
 
-TBD.My Shoutbox Bot
+# TBD.My Shoutbox Bot
 
-PHP Class untuk membuat "bot" untuk TBD.My Shoutbox
+PHP Class untuk memulakan atau mencipta "bot" pada TBD.My Shoutbox.
+
+## Server Requirement
+PHP 5.3.x
+PHP Curl
+PHP Socket
