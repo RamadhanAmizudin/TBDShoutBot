@@ -24,6 +24,7 @@ class TBDShoutBox {
 	var $last_shout, $shouted;
 	var $httpHeader = "GET %s HTTP/1.1\r\nHost: %s\r\nConnection: keep-alive\r\nX-Requested-With: XMLHttpRequest\r\nIf-None-Match: 0\r\nIf-Modified-Since: %s\r\n\r\n";
 	var $pushServer, $pushServerPort, $pushServerPath, $fsock;
+	static $lastmsg = array();
 	
 	function __construct($host) {
 		$this->host = $host;
@@ -37,7 +38,6 @@ class TBDShoutBox {
 	}
 	
 	function FetchChat() {
-		static $lastmsg = array();
 		$this->fsock = fsockopen($this->pushServer, $this->pushServerPort, $errn, $errstr);
 		if($this->fsock) {
 			fwrite($this->fsock, sprintf($this->httpHeader, $this->pushServerPath, $this->pushServer.":".$this->pushServerPort, gmdate("r", time())));
@@ -51,7 +51,6 @@ class TBDShoutBox {
 			}
 			fclose($this->fsock);
 		}
-		$this->FetchChat();
 	}
 	
 	function _clean_name($s) {
