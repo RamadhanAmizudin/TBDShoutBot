@@ -1,7 +1,7 @@
 <?php
 /*
     TBDShoutBox Class
-    Copyright (C) 2012  Ramadhan Amizudin <ramadhan92@gmail.com>
+    Copyright (C) 2013  Ramadhan Amizudin <ramadhan.amizudin@gmail.com>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
