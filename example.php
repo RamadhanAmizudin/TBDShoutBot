@@ -11,7 +11,7 @@ require('./tbdshout.class.php');
 $username = 'test';
 $password = 'test';
 $admin = 'Ahlspiess';
-$host = 'http://w3.tbd.my/';
+$host = 'https://w3.tbd.my/';
 
 $mybb = new MyBB($host);
 $sb = new TBDShoutBox($host);
