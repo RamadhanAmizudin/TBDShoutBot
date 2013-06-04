@@ -37,7 +37,17 @@ class TBDShoutBox {
 		HTTPRequest($this->host.'/xmlhttp.php?action=add_shout', true, sprintf($this->add_shout, urlencode($text), $key));
 	}
 	
-	function FetchChat() {
+	function FetchChat_ws() {
+		require_once("phpws/websocket.client.php");
+		$client = new WebSocket("ws://chat.tbd.my:80/ws?channels=tbdshoutbox");
+		$client->open();
+		$msg = $client->readMessage();
+		$_msg = json_decode($msg->getData());
+		$data = json_decode(base64_decode($_msg->text));
+		return array('user' => $this->_clean_name($data->uname), 'msg' => strip_tags($this->_clean_msg($data->shout_msg)), 'shout_id' => $data->shout_id);
+	}
+	
+	function FetchChat_push() {
 		$this->fsock = fsockopen($this->pushServer, $this->pushServerPort, $errn, $errstr);
 		if($this->fsock) {
 			fwrite($this->fsock, sprintf($this->httpHeader, $this->pushServerPath, $this->pushServer.":".$this->pushServerPort, gmdate("r", time())));
@@ -54,7 +64,7 @@ class TBDShoutBox {
 	}
 	
 	function _clean_name($s) {
-		return preg_replace("/\<a target=\"_top\" href=\"(.+)\"\>(.*?)\<\/a\>/", "$2", $s);
+		return preg_replace("/\<span style=\"color: (.+);\"\>\<strong\>\<img src=\"images\/badge\/(.*)\"\/\>(.*)\<\/strong\>\<\/span\>/i", "$3", $s);
 	}
 
 	function _clean_msg($s) {
