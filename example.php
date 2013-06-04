@@ -3,7 +3,9 @@ date_default_timezone_set('Asia/Kuala_Lumpur');
 ini_set("max_execution_time", "0");
 ini_set("max_input_time", "0");
 set_time_limit(0);
-error_reporting(0);
+if(isset($argv[1]) and $argv[1] == '-debug') {
+	error_reporting(0);
+}
 require('./helper.php');
 require('./mybb.class.php');
 require('./tbdshout.class.php');
@@ -11,7 +13,7 @@ require('./tbdshout.class.php');
 $username = 'test';
 $password = 'test';
 $admin = 'Ahlspiess';
-$host = 'https://w3.tbd.my/';
+$host = 'http://w3.tbd.my/';
 
 $mybb = new MyBB($host);
 $sb = new TBDShoutBox($host);
@@ -29,7 +31,7 @@ $banned = array();
 $lastseen = array();
 
 while(true) {
-	$data = $sb->FetchChat();
+	$data = $sb->FetchChat_ws();
 	if(isset($data['msg']) and !empty($data['msg'])) {
 		if(!in_array(strtolower($data['user']), $banned)) {
 			if(!isset($pmsg[$data['shout_id']])) {
