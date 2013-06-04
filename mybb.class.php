@@ -33,6 +33,7 @@ class MyBB {
 		if(preg_match("/You have entered an invalid/i", $data)) {
 			return false;
 		} else {
+			$data = HTTPRequest($this->host); // tbd lepas login dia redirect ke 404 page -_-
 			$this->GetPostKey($data);
 			return $this->post_key;
 		}
