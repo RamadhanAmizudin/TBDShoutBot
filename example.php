@@ -25,7 +25,7 @@ $post_key	=	$mybb->post_key;
 $xpm_key	=	$mybb->xpm_key;
 $xpm_user	=	$mybb->xpm_user;
 
-if(!$post_key) {
+if(empty($post_key) OR !$post_key) {
 	e("[+] Invalid Login");
 	exit;
 }
