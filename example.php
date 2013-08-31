@@ -1,10 +1,12 @@
 <?php
+$debug = false;
 date_default_timezone_set('Asia/Kuala_Lumpur');
 ini_set("max_execution_time", "0");
 ini_set("max_input_time", "0");
 set_time_limit(0);
 if(isset($argv[1]) and $argv[1] == '-debug') {
-	error_reporting(0);
+	error_reporting(E_ALL);
+	$debug = true;
 }
 require('./helper.php');
 require('./mybb.class.php');
@@ -17,21 +19,27 @@ $host = 'http://w3.tbd.my/';
 
 $mybb = new MyBB($host);
 $sb = new TBDShoutBox($host);
+$mybb->Login($username, $password);
 
-$post_key = $mybb->Login($username, $password);
+$post_key	=	$mybb->post_key;
+$xpm_key	=	$mybb->xpm_key;
+$xpm_user	=	$mybb->xpm_user;
+
 if(!$post_key) {
 	e("[+] Invalid Login");
 	exit;
 }
 e("[+] Successfuly Login");
 e("[+] Post Key: {$post_key}");
+if($debug) {
+	e(sprintf("[+] XPM Key: %s XPM User: %s", $xpm_key, $xpm_user));
+}
 
 static $pmsg = array();
 $banned = array();
 $lastseen = array();
-
 while(true) {
-	$data = $sb->FetchChat_ws();
+	$data = $sb->FetchChat_ws($xpm_user, $xpm_key);
 	if(isset($data['msg']) and !empty($data['msg'])) {
 		if(!in_array(strtolower($data['user']), $banned)) {
 			if(!isset($pmsg[$data['shout_id']])) {
