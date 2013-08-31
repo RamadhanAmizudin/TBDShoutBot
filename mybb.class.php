@@ -19,9 +19,10 @@
 
 
 class MyBB {
-
+	
+	var $xpm_key, $xpm_user;
 	var $username, $password, $post_key, $host;
-	var $login_post = 'username=%s&password=%s&remember=yes&submit=Login&action=do_login&url=%s';
+	var $login_post = 'username=%s&password=%s&remember=yes&submit=Login&action=do_login&url=';
 	var $send_pm = 'my_post_key=#post_key#&to=#to#&bcc=&subject=#subject#&icon=-1&message_new=#body#&message=#body#&options[signature]=1&options[savecopy]=1&options[readreceipt]=1&action=do_send&pmid=&do=&submit=Send+Message';
 	
 	function __construct($host) {
@@ -29,13 +30,15 @@ class MyBB {
 	}
 	
 	function Login($username = '', $password = '') {
-		$data = HTTPRequest($this->host . '/member.php', true, sprintf($this->login_post, $username, $password, $this->host));
+		$data = HTTPRequest($this->host . '/member.php', true, sprintf($this->login_post, $username, $password));
 		if(preg_match("/You have entered an invalid/i", $data)) {
 			return false;
 		} else {
-			$data = HTTPRequest($this->host); // tbd lepas login dia redirect ke 404 page -_-
+			// $data = HTTPRequest($this->host); // tbd lepas login dia redirect ke 404 page -_-
 			$this->GetPostKey($data);
-			return $this->post_key;
+			if ( stripos($this->host, 'tbd.my') !== false ) {
+				$this->getXPMKey($data);
+			}
 		}
 	}
 	
@@ -50,6 +53,14 @@ class MyBB {
 	function GetPostKey($response) {
 		preg_match_all("/var\ my_post_key\ =\ \"(.+?)\"\;/", $response, $post_key);
 		$this->post_key = $post_key[1][0];
+	}
+	
+	function getXPMKey($response) {
+		// print $response;
+		preg_match_all("/var\ xpm_key\ =\ \"(.+?)\"\;/", $response, $key);
+		preg_match_all("/var\ xpm_user\ =\ \"(.+?)\"\;/", $response, $user);
+		$this->xpm_key = $key[1][0];
+		$this->xpm_user = $user[1][0];
 	}
 	
 }
