@@ -37,13 +37,14 @@ class TBDShoutBox {
 		HTTPRequest($this->host.'/xmlhttp.php?action=add_shout', true, sprintf($this->add_shout, urlencode($text), $key));
 	}
 	
-	function FetchChat_ws() {
+	function FetchChat_ws($user, $key) {
 		require_once("phpws/websocket.client.php");
-		$client = new WebSocket("ws://chat.tbd.my:80/ws?channels=tbdshoutbox");
+		$client = new WebSocket("ws://chat.tbd.my:80/ws?channels=tbdshoutbox&user=$user&key=$key");
 		$client->open();
 		$msg = $client->readMessage();
 		$_msg = json_decode($msg->getData());
 		$data = json_decode(base64_decode($_msg->text));
+		$client->close();
 		return array('user' => $this->_clean_name($data->uname), 'msg' => strip_tags($this->_clean_msg($data->shout_msg)), 'shout_id' => $data->shout_id);
 	}
 	
