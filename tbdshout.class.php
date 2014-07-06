@@ -39,13 +39,13 @@ class TBDShoutBox {
 	
 	function FetchChat_ws($user, $key) {
 		require_once("phpws/websocket.client.php");
-		$client = new WebSocket("ws://chat.tbd.my:80/ws?channels=tbdshoutbox&user=$user&key=$key");
+		$client = new WebSocket("wss://chat.tbd.my:443/ws?channels=tbdshoutbox&user=$user&key=$key"); //suhz - 7th July 2014
 		$client->open();
 		$msg = $client->readMessage();
 		$_msg = json_decode($msg->getData());
-		$data = json_decode(base64_decode($_msg->text));
+		$data = msgpack_unpack(base64_decode($_msg->text)); //suhz - 7th July 2014
 		$client->close();
-		return array('user' => $this->_clean_name($data->uname), 'msg' => strip_tags($this->_clean_msg($data->shout_msg)), 'shout_id' => $data->shout_id);
+		return array('user' => $this->_clean_name($data['uname']), 'msg' => strip_tags($this->_clean_msg($data['shout_msg'])), 'shout_id' => $data['shout_id']); //suhz - 7th July 2014
 	}
 	
 	function FetchChat_push() {
